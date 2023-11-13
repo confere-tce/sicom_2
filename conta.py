@@ -1,14 +1,15 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
-import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
+# from streamlit_option_menu import option_menu
+# import streamlit_authenticator as stauth
+# import yaml
+# from yaml.loader import SafeLoader
+from  util import mensagem as msg
 
 def app():
     st.subheader("Conta de Usuário", divider='rainbow')
 
     if not st.session_state.authentication_status:
-        st.warning("Necessário Logar no Sistema", icon="⚠️")
+        msg.warning("Necessário Logar no Sistema")
     else:
         pass
 

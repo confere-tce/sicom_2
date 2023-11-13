@@ -1,21 +1,13 @@
 import psycopg2
+import yaml
+from yaml.loader import SafeLoader
+
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
 
 conn = psycopg2.connect(
-    #Local
-    dbname="socorrpm",
-    user="socorrpm",
-    password="SICSADM",
-    host="localhost"
-
-    # Uberaba
-    # dbname="uberabpm",
-    # user="uberabpm",
-    # password="SICSADM",
-    # host="34.86.191.201"
-
-    #Elephant
-    # dbname="jsmcfbqq",
-    # user="jsmcfbqq",
-    # password="dzYLD0UV56ksursrQrP4fHMi_f1X116e",
-    # host="silly.db.elephantsql.com"
+    dbname=config['conection']['dbname'],
+    user=config['conection']['user'],
+    password=config['conection']['password'],
+    host=config['conection']['host']
 )

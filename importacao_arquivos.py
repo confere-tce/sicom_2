@@ -6,22 +6,22 @@ from funcoes import *
 from sqlalchemy import create_engine
 from zipfile import ZipFile
 from ConsultasSQL import delete
+import yaml
+from yaml.loader import SafeLoader
+from  util import mensagem as msg
 
 
 def app():
     st.subheader("Importação dos arquivos Acompanhamento Mensal (AM) e Balancete", divider='rainbow')
 
     if not st.session_state.authentication_status:
-        st.warning("Necessário Logar no Sistema", icon="⚠️")
+        msg.warning("Necessário Logar no Sistema")
     else:
-        #Elephant
-        # engine = create_engine('postgresql://jsmcfbqq:dzYLD0UV56ksursrQrP4fHMi_f1X116e@silly.db.elephantsql.com/jsmcfbqq')
 
-        #Uberaba
-        # engine = create_engine('postgresql://uberabpm:SICSADM@34.86.191.201/uberabpm')
+        with open('config.yaml') as file:
+            config = yaml.load(file, Loader=SafeLoader)
 
-        #Local
-        engine = create_engine('postgresql://socorrpm:SICSADM@localhost/socorrpm')
+        engine = create_engine(config['conection']['url'])
 
         if not os.path.exists('uploads'):
             os.makedirs('uploads')
@@ -52,7 +52,7 @@ def app():
                 arquivo = arquivo_AM.name.split('_')
 
                 if arquivo[0] != 'AM':
-                    st.error('Arquivo não é AM (Acompanhamento Mensal)', icon="🚨")
+                    msg.error('Arquivo não é AM (Acompanhamento Mensal)')
                     tudoOK = False
 
                 # pega o cod Municipio do AM
@@ -83,7 +83,7 @@ def app():
                 arquivo = arquivo_BAL.name.split('_')
 
                 if arquivo[0] != 'BALANCETE':
-                    st.error('Arquivo não é Balancete', icon="🚨")
+                    msg.error('Arquivo não é Balancete')
                     tudoOK = False
 
                 # pega o Cod Municipio do Balancete
@@ -102,23 +102,19 @@ def app():
 
         # validações entre os dois arquivos
         if ano_arquivo_AM is not None and ano_arquivo_Bal is not None and ano_arquivo_AM != ano_arquivo_Bal:
-            st.error(
-                f"O Ano do arquivo AM ({ano_arquivo_AM}) está diferente do Ano do arquivo Balancete ({ano_arquivo_Bal}) ", icon="🚨")
+            msg.error(f"O Ano do arquivo AM ({ano_arquivo_AM}) está diferente do Ano do arquivo Balancete ({ano_arquivo_Bal}) ")
             tudoOK = False
 
         if cod_municipio_AM is not None and cod_municipio_BAL is not None and cod_municipio_AM != cod_municipio_BAL:
-            st.error(
-                f"O Código do Municipio do arquivo AM ({cod_municipio_AM}) está diferente do Código do Municipio do arquivo Balancete ({cod_municipio_BAL}) ", icon="🚨")
+            msg.error(f"O Código do Municipio do arquivo AM ({cod_municipio_AM}) está diferente do Código do Municipio do arquivo Balancete ({cod_municipio_BAL}) ")
             tudoOK = False
 
         if cod_orgao_AM is not None and cod_orgao_BAL is not None and cod_orgao_AM != cod_orgao_BAL:
-            st.error(
-                f"O Código do Orgão do arquivo AM ({cod_orgao_AM}) está diferente do Código do Orgão do arquivo Balancete ({cod_orgao_BAL}) ", icon="🚨")
+            msg.error(f"O Código do Orgão do arquivo AM ({cod_orgao_AM}) está diferente do Código do Orgão do arquivo Balancete ({cod_orgao_BAL})")
             tudoOK = False
 
         if mes_AM is not None and mes_BAL is not None and mes_AM != mes_BAL:
-            st.error(
-                f"O Mês de geração do arquivo AM ({mes_AM}) está diferente do Mês de geração do arquivo Balancete ({mes_BAL}) ", icon="🚨")
+            msg.error(f"O Mês de geração do arquivo AM ({mes_AM}) está diferente do Mês de geração do arquivo Balancete ({mes_BAL})")
             tudoOK = False
 
         st.divider()
@@ -226,7 +222,7 @@ def app():
 
                             df.to_sql('tce_sicom', engine, if_exists='append', index=False)
 
-                st.success("Arquivo ACOMPANHAMENTO MENSAL (AM) Importado com Sucesso", icon="✅")
+                msg.success("Arquivo ACOMPANHAMENTO MENSAL (AM) Importado com Sucesso")
 
                 my_bar_AM.empty()
 
@@ -277,7 +273,7 @@ def app():
 
                             df.to_sql('tce_sicom', engine,if_exists='append', index=False)
 
-                st.success("Arquivo BALANCETE Importado com Sucesso.", icon="✅")
+                msg.success("Arquivo BALANCETE Importado com Sucesso.")
 
                 # Deletando a pasta depois do processamento
                 deletando_pasta(pasta_temp)

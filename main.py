@@ -11,6 +11,7 @@ import relatorios
 import resultado_apuracao
 import graficos
 from ConsultasSQL import criaView, usuario
+from  util import mensagem as msg
 
 # from streamlit_extras.app_logo import add_logo
 
@@ -20,7 +21,7 @@ st.set_page_config(
     page_title="Consulta TCE"
 )
 
-criaView()
+# criaView()
 
 # escondendo os botoes e menus padrao de tela
 hide_menu = """
@@ -77,7 +78,7 @@ class MultiApp:
             #     config['cookie']['expiry_days']
             # )
 
-            config = credenciais()
+            config = usuario.credenciais()
 
             authenticator = stauth.Authenticate(
                 config['credentials'],
@@ -91,20 +92,9 @@ class MultiApp:
             if authentication_status:
                 authenticator.logout('Logout', 'main')
             elif authentication_status == False:
-                st.error('Usuario / Senha inválidos', icon="🚨")
+                msg.error('Usuario / Senha inválidos')
 
         def login2():
-            # with open('config.yaml') as file:
-            #     config = yaml.load(file, Loader=SafeLoader)
-
-            # authenticator = stauth.Authenticate(
-            #     config['credentials'],
-            #     config['cookie']['name'],
-            #     config['cookie']['key'],
-            #     config['cookie']['expiry_days'],
-            #     config['cookie']['expiry_days']
-            # )
-
             config = usuario.credenciais()
 
             authenticator = stauth.Authenticate(
@@ -132,7 +122,7 @@ class MultiApp:
                 if authentication_status:
                     authenticator.logout('Logout', 'main')
                 elif authentication_status == False:
-                    st.error('Usuario / Senha inválidos', icon="🚨")
+                    msg.error('Usuario / Senha inválidos')
 
             if modo_acesso == 'Cadastro':
                 try:
@@ -151,35 +141,35 @@ class MultiApp:
                             if email:
                                 if usuario.validar_email(email):
                                     if usuario.get_user_email(email):
-                                        st.error('Email Já Cadastrado', icon="🚨")
+                                        msg.error('Email Já Cadastrado')
                                         podeCadastrar = False
                                 else:
-                                    st.error('Email Inválido', icon="🚨")
+                                    msg.error('Email Inválido')
                                     podeCadastrar = False
                             else: 
-                                st.error('Informe o Email', icon="🚨")
+                                msg.error('Informe o Email')
                                 podeCadastrar = False
 
                             #Validação usuario
                             if username:
                                 if usuario.get_user(username):
-                                    st.error('Usuário Já Cadastrado', icon="🚨")
+                                    msg.error('Usuário Já Cadastrado')
                                     podeCadastrar = False
                             else:
-                                st.error('Informe o Usuário', icon="🚨")
+                                msg.error('Informe o Usuário')
                                 podeCadastrar = False
 
                             #Validação Password
                             if password != confirm_password:
-                                st.error('Senha e Confirma Senha Inválidos', icon="🚨")
+                                msg.error('Senha e Confirma Senha Inválidos')
                                 podeCadastrar = False
 
                             if podeCadastrar:
                                 password_decoded = stauth.Hasher([password]).generate()
                                 if usuario.insere_users(email, username, name, password_decoded[0]):
-                                    st.success('Cadastrado com Sucesso. Entre em Login e acesse o Sistema', icon="✅")
+                                    msg.success('Cadastrado com Sucesso. Entre em Login e acesse o Sistema')
                                 else:
-                                    st.error('Erro no cadastro', icon="🚨")
+                                    msg.error('Erro no cadastro')
 
                     # if authenticator.register_user('Cadastrar', preauthorization=False):
 
@@ -188,7 +178,7 @@ class MultiApp:
 
                         
                 except Exception as e:
-                    st.error(e)
+                    msg.error(e)
 
         with st.sidebar:
             app = option_menu(None,

@@ -2,16 +2,17 @@ import streamlit as st
 import pandas as pd
 from ConsultasSQL import *
 from funcoes import *
+from  util import mensagem as msg
 
 
 def app():
     st.subheader("Relatórios", divider='rainbow')
 
     if not st.session_state.authentication_status:
-        st.warning("Necessário Logar no Sistema", icon="⚠️")
+        msg.warning("Necessário Logar no Sistema")
     else:
         if not st.session_state.cod_municipio_AM:
-            st.error("Sem Informações a serem processadas e visualizadas", icon="🚨")
+            msg.error("Sem Informações a serem processadas e visualizadas")
         else:
             opcoes = ['Analítico de Despesa', 'Movimentos Por Fonte']
 
@@ -36,7 +37,7 @@ def app():
                         exportar_pdf(df, pdf_filename, formato="A4", orientacao="portrait", percentual_tabela=10, tamanho_letra=7)
                         exportar_excel(df, "Analítico de Despesa.xlsx")
                     else:
-                        st.error("Nenhum dado encontrado para os parâmetros inseridos", icon="🚨")  
+                        msg.error("Nenhum dado encontrado para os parâmetros inseridos")  
                 elif relatorios == 'Movimentos Por Fonte':
                     dados = totalizaMovimentosPorFonte(st.experimental_user, st.session_state.ano)
 
@@ -50,4 +51,4 @@ def app():
                         exportar_pdf(df, pdf_filename, formato="A4", orientacao="landscape", percentual_tabela=6, tamanho_letra=5)
                         exportar_excel(df, "Movimentos Por Fonte.xlsx")
                     else:
-                        st.error("Nenhum dado encontrado para os parâmetros inseridos", icon="🚨")
+                        msg.error("Nenhum dado encontrado para os parâmetros inseridos")

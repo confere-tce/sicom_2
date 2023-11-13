@@ -2,17 +2,18 @@ import streamlit as st
 from ConsultasSQL import *
 import pandas as pd
 import altair as alt
+from  util import mensagem as msg
 
 def app():
     st.subheader("Gráficos", divider='rainbow')
 
     if not st.session_state.authentication_status:
-        st.warning("Necessário Logar no Sistema", icon="⚠️")
+        msg.warning("Necessário Logar no Sistema")
     else: 
         # st.markdown("<style>.block-container {background-color: #fffff0; border-radius: 20px; box-shadow: 3px 3px 3px #888;}</style>", unsafe_allow_html=True)
 
         if not st.session_state.cod_municipio_AM:
-            st.error("Sem Informações a serem processadas e visualizadas", icon="🚨")
+            msg.error("Sem Informações a serem processadas e visualizadas")
         else:
             ##### EMPENHOS #####
             with st.container():
