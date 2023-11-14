@@ -1,6 +1,17 @@
 from connection import conn
 import re
 import views
+import random
+import enviar_email as e
+import streamlit_authenticator as stauth
+
+def chaveacesso():
+    x = random.randrange(1,99999)
+
+    if(len(str(x))) < 5:
+        return chaveacesso()
+    else:
+        return x
 
 class usuario:
     def credenciais():
@@ -36,60 +47,50 @@ class usuario:
 
         return credentials
 
-    def insere_users(email, usuario, name, password):
+    def insere_users(email, username, name, password):
+
+        chave = chaveacesso()
+
+        password_decoded = stauth.Hasher([password]).generate()
+
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO TCE_USERS (EMAIL, USERNAME, NAME, PASSWORD) VALUES (%s,%s,%s,%s)', (email, usuario, name, password))
+            cursor.execute('INSERT INTO TCE_USERS (EMAIL, USERNAME, NAME, CHAVEACESSO, PASSWORD) VALUES (%s,%s,%s,%s,%s)', (email, username, name, chave, password_decoded[0]))
             cursor.close()
             conn.commit()
+
+            e.enviar_email(username)
+            print('1')
+
             return True
         except (Exception, conn.Error) as error:
+            print('2')
             return False
 
-    def get_user_email(email):
+    def get_dados_usuario(usuario):
         cursor = conn.cursor()
 
         consulta = """
             SELECT
-                *
-            FROM
-                TCE_USERS
-            WHERE
-                EMAIL = %s
-            """
-
-        cursor.execute(consulta, (email,))
-        dados = cursor.fetchall()
-        cursor.close()
-        
-        if dados:
-            return True
-        else:
-            return False
-        
-    def get_user(usuario):
-        cursor = conn.cursor()
-
-        consulta = """
-            SELECT
-                *
+                USERNAME, EMAIL, NAME, CHAVEACESSO
             FROM
                 TCE_USERS
             WHERE
                 USERNAME = %s
             """
-
         cursor.execute(consulta, (usuario,))
         dados = cursor.fetchall()
         cursor.close()
+        print(dados)
 
         if dados:
-            return True
+            return dados[0][0], dados[0][1], dados[0][2], dados[0][3]
         else:
-            return False
+            return None, None, None, None
         
     def validar_email(email):
-        return re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', email)
+        return re.search(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z\.a-zA-Z]{1,6}$', email)
+        # return re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', email)
 
 def criaView():
     cursor = conn.cursor()

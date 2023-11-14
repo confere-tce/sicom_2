@@ -28,7 +28,7 @@ def app():
             ######## DADOS BANCÁRIOS ############
             st.subheader(":red[Contas Bancárias:]")
 
-            bancos = confereSaldoFinalBancos(st.experimental_user, st.session_state.ano)
+            bancos = confereSaldoFinalBancos(st.session_state.username, st.session_state.ano)
             if bancos:
                 col1, col2, col3 = st.columns(3)
                 col1.metric(label="Saldo Final no CTB", value=locale.currency(bancos[0][0], grouping=True, symbol=False))
@@ -47,7 +47,7 @@ def app():
                     saldo_Final_BAL = []
                     diferenca = []
 
-                    valores = buscaDiferencaSaldoFinalBancos(st.experimental_user, st.session_state.ano)
+                    valores = buscaDiferencaSaldoFinalBancos(st.session_state.username, st.session_state.ano)
                     with st.expander("Dados com diferença nos saldos finais:"):
                         for linha in valores:
                             ficha.append(str(linha[0]))
@@ -78,7 +78,7 @@ def app():
             else:
                 msg.warning("Não foram encontrados dados Saldo de Bancários")
 
-            bancos = confereSaldoFinalBancosNaoCompoe(st.experimental_user, st.session_state.ano)
+            bancos = confereSaldoFinalBancosNaoCompoe(st.session_state.username, st.session_state.ano)
             if bancos:
                 col1, col2, col3 = st.columns(3)
                 col1.metric(label="Saldo Final no CTB não Compõe Saldo de Caixa",value=locale.currency(bancos[0][0], grouping=True, symbol=False))
@@ -98,7 +98,7 @@ def app():
                     saldo_Final_BAL = []
                     diferenca = []
 
-                    valores = buscaDiferencaSaldoFinalBancosNaoCompoe(st.experimental_user, st.session_state.ano)
+                    valores = buscaDiferencaSaldoFinalBancosNaoCompoe(st.session_state.username, st.session_state.ano)
                     with st.expander("Dados com diferença nos saldos finais:"):
                         for linha in valores:
                             ficha.append(linha[0])
@@ -129,7 +129,7 @@ def app():
             else:
                 msg.warning("Não foram encontrados dados de Valores que não Compõe Saldo de Caixa para o usuário e ano fornecidos")
 
-            bancos = confereSaldoFinalBancosRestituiveis(st.experimental_user, st.session_state.ano)
+            bancos = confereSaldoFinalBancosRestituiveis(st.session_state.username, st.session_state.ano)
             if bancos:
                 col1, col2, col3 = st.columns(3)
                 col1.metric(label="Saldo Final no CTB Valores Restituíveis", value=locale.currency(bancos[0][0], grouping=True, symbol=False))
@@ -149,7 +149,7 @@ def app():
                     saldo_Final_BAL = []
                     diferenca = []
 
-                    valores = buscaDiferencaSaldoFinalBancosRestituiveis(st.experimental_user, st.session_state.ano)
+                    valores = buscaDiferencaSaldoFinalBancosRestituiveis(st.session_state.username, st.session_state.ano)
                     with st.expander("Dados com diferença nos saldos finais:"):
                         for linha in valores:
                             ficha.append(linha[0])
@@ -181,7 +181,7 @@ def app():
                 msg.warning("Não foram encontrados dados de Valores Restituíveis para o usuário e ano fornecidos")
 
             # Exibe Conciliacao Bancaria
-            concilicacao_bancos = buscaValoresConciliacaoBancaria(st.experimental_user, st.session_state.ano)
+            concilicacao_bancos = buscaValoresConciliacaoBancaria(st.session_state.username, st.session_state.ano)
             if concilicacao_bancos:
                 with st.expander("Informações de Conciliação Bancária"):
                     for linha in concilicacao_bancos:
@@ -203,7 +203,7 @@ def app():
 
             st.subheader(":red[Valores Empenhados:]")
 
-            empenhos = confereValoresEmpenhados(st.experimental_user, st.session_state.ano)
+            empenhos = confereValoresEmpenhados(st.session_state.username, st.session_state.ano)
             if empenhos:
                 col1, col2, col3 = st.columns(3)
                 col1.metric(label="Valores Empenhados", value=locale.currency(empenhos[0][0], grouping=True, symbol=False))
@@ -222,7 +222,7 @@ def app():
                     saldo_Final_BAL = []
                     diferenca = []
 
-                    valores = buscaDiferencaValoresEmpenhados(st.experimental_user, st.session_state.ano)
+                    valores = buscaDiferencaValoresEmpenhados(st.session_state.username, st.session_state.ano)
                     with st.expander("Dados com diferença nos saldos finais:"):
                         for linha in valores:
                             funcional.append(f"{linha[0]}.{linha[1]}.{linha[2]}.{linha[3]}.{linha[4]}.{linha[5]}.{linha[6]}.{linha[7]}")
@@ -258,7 +258,7 @@ def app():
 
             st.subheader(":red[Valores de Receitas:]")
 
-            receitas = confereValoresReceitas(st.experimental_user, st.session_state.ano)
+            receitas = confereValoresReceitas(st.session_state.username, st.session_state.ano)
             if receitas:
                 col1, col2, col3 = st.columns(3)
                 col1.metric(label="Valores Receita", value=locale.currency(receitas[0][0], grouping=True, symbol=False))
@@ -277,7 +277,7 @@ def app():
                     saldo_Final_BAL = []
                     diferenca = []
 
-                    valores = buscaDiferencaValoresReceitas(st.experimental_user, st.session_state.ano)
+                    valores = buscaDiferencaValoresReceitas(st.session_state.username, st.session_state.ano)
                     with st.expander("Dados com diferença nos saldos finais:"):
                         for linha in valores:
                             receita.append('{}.{}.{}.{}.{}.{}.{}'.format(linha[0][:1], linha[0][1:2], linha[0][2:3], linha[0][3:4], linha[0][4:6], linha[0][6:7], linha[0][7:]))

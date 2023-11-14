@@ -67,6 +67,22 @@ class MultiApp:
         })
 
     def run():
+
+        conteiner = st.container()
+
+        if 'cod_municipio_AM' not in st.session_state:
+            st.session_state.cod_municipio_AM = None
+        if 'cod_orgao' not in st.session_state:
+            st.session_state.cod_orgao = None
+        if 'mes' not in st.session_state:
+            st.session_state.mes = None
+        if 'ano' not in st.session_state:
+            st.session_state.ano = None
+        if 'username' not in st.session_state:
+            st.session_state.username = None
+        if 'email_usuario' not in st.session_state:
+            st.session_state.email_usuario = None
+
         def login():
             # with open('config.yaml') as file:
             #     config = yaml.load(file, Loader=SafeLoader)
@@ -111,9 +127,9 @@ class MultiApp:
                     options=["Login", "Cadastro"], 
                     icons=['bi-door-open', 'bi-box-arrow-in-right'], 
                     # orientation="horizontal",
-                    styles={
-                        "nav-link": {"font-size": "13px"},
-                        "nav-link-selected": {"font-size": "13px", "background-color": "#2986cc"}, }
+                    # styles={
+                    #     "nav-link": {"font-size": "13px"},
+                    #     "nav-link-selected": {"font-size": "13px", "background-color": "#2986cc"}, }
                 )
 
             if modo_acesso == 'Login':
@@ -123,24 +139,26 @@ class MultiApp:
                     authenticator.logout('Logout', 'main')
                 elif authentication_status == False:
                     msg.error('Usuario / Senha inválidos')
-
             if modo_acesso == 'Cadastro':
                 try:
                     with st.form('formLogin'):
-                        st.subheader(':green[Cadastrar]')
+                        st.subheader('Cadastro')
                         email = st.text_input('Email:') 
                         username = st.text_input('Usuário:') 
                         name = st.text_input('Nome:') 
                         password = st.text_input('Senha:') 
                         confirm_password = st.text_input('Confirmar Senha:') 
-                        podeCadastrar = True
 
                         submitted = st.form_submit_button("Registrar")
                         if submitted:
+
+                            usuario_login, email_usuario, nome, chave = usuario.get_dados_usuario(username)
+                            
+                            podeCadastrar = True
                             #validação email
                             if email:
                                 if usuario.validar_email(email):
-                                    if usuario.get_user_email(email):
+                                    if email == email_usuario:
                                         msg.error('Email Já Cadastrado')
                                         podeCadastrar = False
                                 else:
@@ -152,7 +170,7 @@ class MultiApp:
 
                             #Validação usuario
                             if username:
-                                if usuario.get_user(username):
+                                if username == usuario_login:
                                     msg.error('Usuário Já Cadastrado')
                                     podeCadastrar = False
                             else:
@@ -165,8 +183,7 @@ class MultiApp:
                                 podeCadastrar = False
 
                             if podeCadastrar:
-                                password_decoded = stauth.Hasher([password]).generate()
-                                if usuario.insere_users(email, username, name, password_decoded[0]):
+                                if usuario.insere_users(email, username, name, password):
                                     msg.success('Cadastrado com Sucesso. Entre em Login e acesse o Sistema')
                                 else:
                                     msg.error('Erro no cadastro')
@@ -181,53 +198,63 @@ class MultiApp:
                     msg.error(e)
 
         with st.sidebar:
-            app = option_menu(None,
-                options=['Home', 'Importação de Arquivo', 'Resultado da Apuração', 'Relatórios', 'Gráficos', 'Conta Usuário'],
-                icons=['bi-house', 'bi-activity','bi-archive', 'bi-book', 'bi-bar-chart', 'bi-person'],
-                # default_index=0,
-                # styles= {"nav-link-selected": {"background-color": "#2986cc"}, }
-                # styles={
-                #     "container": {"padding": "5!important", "background-color": '#16537e'},
-                #     "icon": {"color": "white", "font-size": "23px"},
-                #     "nav-link": {"color": "white", "font-size": "15px", "text-align": "left", "margin": "0px", "--hover-color": "#2986cc"},
-                #     "nav-link-selected": {"background-color": "#2986cc"}, }
-            )
+            app = None
+            if st.session_state.username:
+                app = option_menu(None,
+                    options=['Home', 'Importação de Arquivo', 'Resultado da Apuração', 'Relatórios', 'Gráficos', 'Conta Usuário'],
+                    icons=['bi-house', 'bi-activity','bi-archive', 'bi-book', 'bi-bar-chart', 'bi-person'],
+                    # default_index=0,
+                    # styles= {"nav-link-selected": {"background-color": "#2986cc"}, }
+                    # styles={
+                    #     "container": {"padding": "5!important", "background-color": '#16537e'},
+                    #     "icon": {"color": "white", "font-size": "23px"},
+                    #     "nav-link": {"color": "white", "font-size": "15px", "text-align": "left", "margin": "0px", "--hover-color": "#2986cc"},
+                    #     "nav-link-selected": {"background-color": "#2986cc"}, }
+                )
 
-            ###### painel da impportação #####
-            if 'cod_municipio_AM' not in st.session_state:
-                st.session_state.cod_municipio_AM = None
-                st.session_state.cod_orgao = None
-                st.session_state.mes = None
-                st.session_state.ano = None
-                st.experimental_user = None
-                
+            # ###### painel da impportação #####
             if st.session_state.cod_municipio_AM:
-                st.experimental_user = st.session_state.username if 'username' in st.session_state else None
                 texto = f"""
                     :red[Dados de Importação:] \n
                     Código Município: {st.session_state.cod_municipio_AM} \n
                     Código Orgão: {st.session_state.cod_orgao} \n
                     Mês: {st.session_state.mes} ({meses_extenso[int(st.session_state.mes)-1].capitalize()})\n
                     Ano: {st.session_state.ano} \n
-                    Usuário: {st.experimental_user}
+                    Usuário: {st.session_state.username}
                 """
                 st.sidebar.info(texto)
 
+            if 'username' not in st.session_state or st.session_state.username == None:
+                st.session_state.cod_municipio_AM = None
+                st.session_state.cod_orgao = None
+                st.session_state.mes = None
+                st.session_state.ano = None
+            
             ###### Login do Sistema #####
             login2()
             #### ate aqui ####
 
-        if app == "Home":
-            home.app()
-        if app == "Importação de Arquivo":
-            importacao_arquivos.app()
-        if app == "Resultado da Apuração":
-            resultado_apuracao.app()
-        if app == 'Relatórios':
-            relatorios.app()
-        if app == 'Gráficos':
-            graficos.app()
-        if app == "Conta Usuário":
-            conta.app()
+        if app:
+            if app == "Home":
+                home.app()
+            if app == "Importação de Arquivo":
+                importacao_arquivos.app()
+            if app == "Resultado da Apuração":
+                resultado_apuracao.app()
+            if app == 'Relatórios':
+                relatorios.app()
+            if app == 'Gráficos':
+                graficos.app()
+            if app == "Conta Usuário":
+                conta.app()
+        else:
+            st.subheader("Bem vindo ao :blue[Consuta TCE]", divider='rainbow')
+            st.write(st.session_state.authentication_status )
+            st.write(st.session_state.name )
+            st.write(st.session_state.username )
+            st.write(st.session_state.cod_municipio_AM )
+            st.write(st.session_state.cod_orgao )
+            st.write(st.session_state.mes )
+            st.write(st.session_state.ano )
 
     run()

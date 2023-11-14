@@ -18,7 +18,7 @@ def app():
             ##### EMPENHOS #####
             with st.container():
 
-                dados = graficoEmpenhoReceita(st.experimental_user, st.session_state.ano)
+                dados = graficoEmpenhoReceita(st.session_state.username, st.session_state.ano)
                 valores = [float(dados[0][0]), float(dados[0][1])]
 
                 col1, col2, col3 = st.columns(3)
@@ -83,7 +83,7 @@ def app():
                     st.altair_chart(bar_chart, use_container_width=True)
 
             # with st.container():
-            #     dados = graficoEmpenhoDiarios(st.experimental_user, st.session_state.ano)
+            #     dados = graficoEmpenhoDiarios(st.session_state.username, st.session_state.ano)
 
             #     dias = []
             #     valores = []

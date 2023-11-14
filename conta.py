@@ -4,6 +4,8 @@ import streamlit as st
 # import yaml
 # from yaml.loader import SafeLoader
 from  util import mensagem as msg
+import enviar_email as e
+
 
 def app():
     st.subheader("Conta de Usuário", divider='rainbow')
@@ -61,3 +63,7 @@ def app():
     #                 st.success('Cadastrado com Sucesso', icon="✅")
     #         except Exception as e:
     #             st.error(e)
+
+    botao = st.button('enviar')
+    if botao:
+        e.enviar_email('ranzatti@sonner.com.br')

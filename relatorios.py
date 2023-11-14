@@ -22,7 +22,7 @@ def app():
 
             if st.button("Imprimir"):
                 if relatorios == 'Analítico de Despesa':
-                    dados = relatorioAnaliticoEmpenho(st.experimental_user, st.session_state.ano)
+                    dados = relatorioAnaliticoEmpenho(st.session_state.username, st.session_state.ano)
 
                     # Exibe os dados em uma tabela
                     if dados:
@@ -39,7 +39,7 @@ def app():
                     else:
                         msg.error("Nenhum dado encontrado para os parâmetros inseridos")  
                 elif relatorios == 'Movimentos Por Fonte':
-                    dados = totalizaMovimentosPorFonte(st.experimental_user, st.session_state.ano)
+                    dados = totalizaMovimentosPorFonte(st.session_state.username, st.session_state.ano)
 
                     # Exibe os dados em uma tabela
                     if dados:

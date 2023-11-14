@@ -123,7 +123,7 @@ def app():
             if st.button("Processar os arquivos", type="primary"):
                 
                 # deletando informaçoes da tabela
-                delete(ano_arquivo_Bal, st.experimental_user)
+                delete(ano_arquivo_Bal, st.session_state.username)
 
                 # criando pasta temporaria e mandando o arquivo zip pra pasta
                 pasta_temp = criar_pasta_temporaria()
@@ -218,7 +218,7 @@ def app():
                             df.insert(0, 'ano', ano_arquivo_AM)
                             df.insert(0, 'arquivo', nome_arquivo)
                             df.insert(0, 'modulo', "AM")
-                            df.insert(0, 'usuario', st.experimental_user)
+                            df.insert(0, 'usuario', st.session_state.username)
 
                             df.to_sql('tce_sicom', engine, if_exists='append', index=False)
 
@@ -269,7 +269,7 @@ def app():
                             df.insert(0, 'ano', ano_arquivo_Bal)
                             df.insert(0, 'arquivo', nome_arquivo)
                             df.insert(0, 'modulo', "BAL")
-                            df.insert(0, 'usuario', st.experimental_user)
+                            df.insert(0, 'usuario', st.session_state.username)
 
                             df.to_sql('tce_sicom', engine,if_exists='append', index=False)
 
