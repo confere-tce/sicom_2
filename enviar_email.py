@@ -5,10 +5,7 @@ from  util import mensagem as msg
 from ConsultasSQL import usuario
 
 def enviar_email(username):
-    print(username)
-
     usuario_login, email_usuario, nome_usuario, chave_acesso = usuario.get_dados_usuario(username)
-    print('3')
 
     corpo_email = f"""
     <p>Olá <b>{nome_usuario}</b>, tudo bem?</p>
@@ -27,7 +24,6 @@ def enviar_email(username):
 
     Código de Ativação: <h1>{chave_acesso}</h1>
 
-    <br>
     <p>Te esperamos lá</p>
 
     Forte abraço da equipe Confere-TCE

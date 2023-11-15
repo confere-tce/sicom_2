@@ -60,11 +60,9 @@ class usuario:
             conn.commit()
 
             e.enviar_email(username)
-            print('1')
 
             return True
         except (Exception, conn.Error) as error:
-            print('2')
             return False
 
     def get_dados_usuario(usuario):
@@ -81,7 +79,6 @@ class usuario:
         cursor.execute(consulta, (usuario,))
         dados = cursor.fetchall()
         cursor.close()
-        print(dados)
 
         if dados:
             return dados[0][0], dados[0][1], dados[0][2], dados[0][3]

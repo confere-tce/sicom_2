@@ -80,8 +80,6 @@ class MultiApp:
             st.session_state.ano = None
         if 'username' not in st.session_state:
             st.session_state.username = None
-        if 'email_usuario' not in st.session_state:
-            st.session_state.email_usuario = None
 
         def login():
             # with open('config.yaml') as file:
@@ -133,7 +131,7 @@ class MultiApp:
                 )
 
             if modo_acesso == 'Login':
-                name, authentication_status, username = authenticator.login('Login', 'main')
+                name, authentication_status, username = authenticator.login('Login', 'sidebar')
 
                 if authentication_status:
                     authenticator.logout('Logout', 'main')
@@ -187,13 +185,6 @@ class MultiApp:
                                     msg.success('Cadastrado com Sucesso. Entre em Login e acesse o Sistema')
                                 else:
                                     msg.error('Erro no cadastro')
-
-                    # if authenticator.register_user('Cadastrar', preauthorization=False):
-
-                    #     with open('config.yaml', 'w') as file:
-                    #         yaml.dump(config, file, default_flow_style=False)
-
-                        
                 except Exception as e:
                     msg.error(e)
 
