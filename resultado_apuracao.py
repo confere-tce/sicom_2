@@ -13,6 +13,8 @@ def app():
 
     if not st.session_state.authentication_status:
         msg.warning("Necessário Logar no Sistema" )
+    elif not st.session_state.ativo:
+        msg.warning("Usuário não está ativo")        
     else:
         if not st.session_state.cod_municipio_AM:
             msg.error("Sem Informações a serem processadas e visualizadas")

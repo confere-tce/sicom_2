@@ -10,8 +10,9 @@ import importacao_arquivos
 import relatorios
 import resultado_apuracao
 import graficos
-from ConsultasSQL import criaView, usuario
-from  util import mensagem as msg
+from ConsultasSQL import usuario
+from util import mensagem as msg
+from views import view
 
 # from streamlit_extras.app_logo import add_logo
 
@@ -21,7 +22,7 @@ st.set_page_config(
     page_title="Consulta TCE"
 )
 
-# criaView()
+view.criaView(False)
 
 # escondendo os botoes e menus padrao de tela
 hide_menu = """
@@ -68,8 +69,6 @@ class MultiApp:
 
     def run():
 
-        conteiner = st.container()
-
         if 'cod_municipio_AM' not in st.session_state:
             st.session_state.cod_municipio_AM = None
         if 'cod_orgao' not in st.session_state:
@@ -80,6 +79,8 @@ class MultiApp:
             st.session_state.ano = None
         if 'username' not in st.session_state:
             st.session_state.username = None
+        if 'ativo' not in st.session_state:
+            st.session_state.ativo = None
 
         def login():
             # with open('config.yaml') as file:
@@ -134,23 +135,26 @@ class MultiApp:
                 name, authentication_status, username = authenticator.login('Login', 'sidebar')
 
                 if authentication_status:
+
+                    usuario_login, email_usuario, nome_usuario, chave_acesso, usuario_ativo = usuario.get_dados_usuario(username)
+                    st.session_state.ativo = usuario_ativo
+
                     authenticator.logout('Logout', 'main')
                 elif authentication_status == False:
                     msg.error('Usuario / Senha inválidos')
             if modo_acesso == 'Cadastro':
                 try:
-                    with st.form('formLogin'):
+                    with st.form('formLogin', clear_on_submit=True):
                         st.subheader('Cadastro')
                         email = st.text_input('Email:') 
                         username = st.text_input('Usuário:') 
                         name = st.text_input('Nome:') 
-                        password = st.text_input('Senha:') 
-                        confirm_password = st.text_input('Confirmar Senha:') 
+                        password = st.text_input('Senha:', type='password') 
+                        confirm_password = st.text_input('Confirmar Senha:', type='password') 
 
                         submitted = st.form_submit_button("Registrar")
                         if submitted:
-
-                            usuario_login, email_usuario, nome, chave = usuario.get_dados_usuario(username)
+                            usuario_login, email_usuario, nome_usuario, chave_acesso, usuario_ativo = usuario.get_dados_usuario(username)
                             
                             podeCadastrar = True
                             #validação email
@@ -182,9 +186,14 @@ class MultiApp:
 
                             if podeCadastrar:
                                 if usuario.insere_users(email, username, name, password):
-                                    msg.success('Cadastrado com Sucesso. Entre em Login e acesse o Sistema')
+                                    msg.success("""
+                                                Cadastrado com Sucesso. 
+
+                                                Foi enviado um email com o código de ativação.
+                                                Logue no sistema, entre no Menu >> Contas e cadastre o código de ativação
+                                                """)
                                 else:
-                                    msg.error('Erro no cadastro')
+                                    msg.error('Erro no cadastro, contate o suporte técnico')
                 except Exception as e:
                     msg.error(e)
 
@@ -220,6 +229,7 @@ class MultiApp:
                 st.session_state.cod_orgao = None
                 st.session_state.mes = None
                 st.session_state.ano = None
+                st.session_state.ativo = None
             
             ###### Login do Sistema #####
             login2()
@@ -240,12 +250,5 @@ class MultiApp:
                 conta.app()
         else:
             st.subheader("Bem vindo ao :blue[Consuta TCE]", divider='rainbow')
-            st.write(st.session_state.authentication_status )
-            st.write(st.session_state.name )
-            st.write(st.session_state.username )
-            st.write(st.session_state.cod_municipio_AM )
-            st.write(st.session_state.cod_orgao )
-            st.write(st.session_state.mes )
-            st.write(st.session_state.ano )
 
     run()

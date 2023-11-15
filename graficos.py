@@ -9,6 +9,8 @@ def app():
 
     if not st.session_state.authentication_status:
         msg.warning("Necessário Logar no Sistema")
+    elif not st.session_state.ativo:
+        msg.warning("Usuário não está ativo")        
     else: 
         # st.markdown("<style>.block-container {background-color: #fffff0; border-radius: 20px; box-shadow: 3px 3px 3px #888;}</style>", unsafe_allow_html=True)
 

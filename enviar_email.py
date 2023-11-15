@@ -1,12 +1,8 @@
 import streamlit as st
 import smtplib
 import email.message
-from  util import mensagem as msg
-from ConsultasSQL import usuario
 
-def enviar_email(username):
-    usuario_login, email_usuario, nome_usuario, chave_acesso = usuario.get_dados_usuario(username)
-
+def enviar_email(nome_usuario, email_usuario, chave_acesso ):
     corpo_email = f"""
     <p>Olá <b>{nome_usuario}</b>, tudo bem?</p>
 
@@ -44,4 +40,4 @@ def enviar_email(username):
     # Login Credentials for sending the mail
     s.login(email_msg['From'], password)
     s.sendmail(email_msg['From'], [email_msg['To']], email_msg.as_string().encode('utf-8'))
-    msg.success('Email enviado com sucesso!')
+    # msg.success('Email enviado com sucesso!')

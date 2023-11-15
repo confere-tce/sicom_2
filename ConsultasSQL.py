@@ -1,19 +1,18 @@
 from connection import conn
 import re
-import views
 import random
 import enviar_email as e
 import streamlit_authenticator as stauth
 
-def chaveacesso():
-    x = random.randrange(1,99999)
-
-    if(len(str(x))) < 5:
-        return chaveacesso()
-    else:
-        return x
-
 class usuario:
+    def chaveacesso():
+        x = random.randrange(1,99999)
+
+        if(len(str(x))) < 5:
+            return usuario.chaveacesso()
+        else:
+            return x
+
     def credenciais():
         cursor = conn.cursor()
 
@@ -49,17 +48,17 @@ class usuario:
 
     def insere_users(email, username, name, password):
 
-        chave = chaveacesso()
+        chave_acesso = usuario.chaveacesso()
 
         password_decoded = stauth.Hasher([password]).generate()
 
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO TCE_USERS (EMAIL, USERNAME, NAME, CHAVEACESSO, PASSWORD) VALUES (%s,%s,%s,%s,%s)', (email, username, name, chave, password_decoded[0]))
+            cursor.execute('INSERT INTO TCE_USERS (EMAIL, USERNAME, NAME, CHAVEACESSO, PASSWORD) VALUES (%s,%s,%s,%s,%s)', (email, username, name, chave_acesso, password_decoded[0]))
             cursor.close()
             conn.commit()
 
-            e.enviar_email(username)
+            e.enviar_email(name, email, chave_acesso)
 
             return True
         except (Exception, conn.Error) as error:
@@ -70,7 +69,7 @@ class usuario:
 
         consulta = """
             SELECT
-                USERNAME, EMAIL, NAME, CHAVEACESSO
+                USERNAME, EMAIL, NAME, CHAVEACESSO, ATIVO
             FROM
                 TCE_USERS
             WHERE
@@ -81,31 +80,24 @@ class usuario:
         cursor.close()
 
         if dados:
-            return dados[0][0], dados[0][1], dados[0][2], dados[0][3]
+            return dados[0][0], dados[0][1], dados[0][2], dados[0][3], dados[0][4]
         else:
-            return None, None, None, None
+            return None, None, None, None, None
+        
+    def update_codigo_ativacao(usuario):
+        cursor = conn.cursor()
+        try:
+            cursor.execute('UPDATE TCE_USERS SET ATIVO = TRUE WHERE USERNAME = %s', (usuario,))
+            cursor.close()
+            conn.commit()
+            return True
+        except (Exception, conn.Error) as error:
+            print(error)
+            return False
         
     def validar_email(email):
         return re.search(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z\.a-zA-Z]{1,6}$', email)
         # return re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', email)
-
-def criaView():
-    cursor = conn.cursor()
-    cursor.execute(views.vw_BuscaDiferencaSaldoFinalBancos_2023())
-    cursor.execute(views.vw_BuscaDiferencaSaldoFinalBancosNaoCompoe_2023())
-    cursor.execute(views.vw_BuscaDiferencaSaldoFinalBancosRestituiveis_2023())
-    cursor.execute(views.vw_BuscaDiferencaValoresEmpenhados_2023())
-    cursor.execute(views.vw_BuscaDiferencaValoresReceitas_2023())
-    cursor.execute(views.vw_ConfereSaldoFinalBancos_2023())
-    cursor.execute(views.vw_ConfereSaldoFinalBancosNaoCompoe_2023())
-    cursor.execute(views.vw_ConfereSaldoFinalBancosRestituiveis_2023())
-    cursor.execute(views.vw_ConfereValoresEmpenhados_2023())
-    cursor.execute(views.vw_ConfereValoresReceitas_2023())
-    cursor.execute(views.vw_RelatorioAnaliticoEmpenho_2023())
-    cursor.execute(views.vw_RelatorioDiarioDespesa_2023())
-    cursor.execute(views.vw_RelatorioMovimentosPorFonte_2023())
-    conn.commit()
-    cursor.close()
 
 def delete(ano, usuario):
     cursor = conn.cursor()

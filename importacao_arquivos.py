@@ -16,6 +16,8 @@ def app():
 
     if not st.session_state.authentication_status:
         msg.warning("Necessário Logar no Sistema")
+    elif not st.session_state.ativo:
+        msg.warning("Usuário não está ativo")
     else:
 
         with open('config.yaml') as file:
