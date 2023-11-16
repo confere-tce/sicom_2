@@ -14,7 +14,7 @@ def enviar_email(nome_usuario, email_usuario, chave_acesso ):
     <ul>
         <li>Entre no sistema com seu usuário e senha</li>
         <li>Clique "Conta Usuário", irá encontrar um campo para informar o código de ativação</li>
-        <li>Copie o codigo abaixo, cole no campo indicado e clique em Salvar</li>
+        <li>Copie o codigo abaixo, cole no campo indicado e clique em <b>Cadastrar</b></li>
 
     </ul>
 
@@ -22,16 +22,19 @@ def enviar_email(nome_usuario, email_usuario, chave_acesso ):
 
     <p>Te esperamos lá</p>
 
+    <br>
+    Favor não responder esse email.
+    <br>
     Forte abraço da equipe Confere-TCE
     
     """
 
     email_msg = email.message.Message()
     email_msg['Subject'] = "Código de Ativação no Confere-TCE"
-    email_msg['From'] = 'ranzatti@gmail.com'
-    # email_msg['To'] = 'ranzatti@sonner.com.br'
+    email_msg['From'] = 'confere.tce@gmail.com'
     email_msg['To'] = email_usuario
-    password = 'cdgtezrnjzgdabxk'
+    password = 'dghrtbhhpfikdxqb'
+    # password = 'cdgtezrnjzgdabxk'
     email_msg.add_header('Content-Type', 'text/html')
     email_msg.set_payload(corpo_email )
 
