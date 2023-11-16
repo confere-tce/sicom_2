@@ -1,23 +1,22 @@
 conection:
-  # Uberaba
-  # dbname="uberabpm",
-  # user="uberabpm",
-  # password="SICSADM",
-  # host="34.86.191.201"
+  dbname: uberabpm
+  user: uberabpm
+  password: SICSADM
+  host: 34.86.191.201
   
   #Elephant
-  # dbname="jsmcfbqq",
-  # user="jsmcfbqq",
-  # password="dzYLD0UV56ksursrQrP4fHMi_f1X116e",
-  # host="silly.db.elephantsql.com"
+  # dbname: jsmcfbqq
+  # user: jsmcfbqq
+  # password: dzYLD0UV56ksursrQrP4fHMi_f1X116e
+  # host: silly.db.elephantsql.com
   
   #Local  
-  dbname: socorrpm
-  user: socorrpm
-  password: SICSADM
-  host: localhost
+  # dbname: socorrpm
+  # user: socorrpm
+  # password: SICSADM
+  # host: localhost
   
   #URL
-  #url: postgresql://uberabpm:SICSADM@34.86.191.201/uberabpm
-  url: postgresql://socorrpm:SICSADM@localhost/socorrpm
+  url: postgresql://uberabpm:SICSADM@34.86.191.201/uberabpm
+  # url: postgresql://socorrpm:SICSADM@localhost/socorrpm
   # url: postgresql://jsmcfbqq:dzYLD0UV56ksursrQrP4fHMi_f1X116e@silly.db.elephantsql.com/jsmcfbqq (Elephant)
