@@ -14,10 +14,11 @@ def app():
                 with st.form('ativacao'):
                     codigo_ativacao = st.text_input('Informe o Código de Ativação')
                     submitted = st.form_submit_button("Cadastrar")
+                    usuario_login, email_usuario, nome_usuario, chave_acesso, usuario_ativo = usuario.get_dados_usuario(st.session_state.username.lower())
                     if submitted:
-                        usuario_login, email_usuario, nome_usuario, chave_acesso, usuario_ativo = usuario.get_dados_usuario(st.session_state.username)
+                        # usuario_login, email_usuario, nome_usuario, chave_acesso, usuario_ativo = usuario.get_dados_usuario(st.session_state.username)
                         if int(codigo_ativacao) == int(chave_acesso):
-                            if usuario.update_codigo_ativacao(st.session_state.username):
+                            if usuario.update_codigo_ativacao(st.session_state.username.lower()):
                                 st.session_state.ativo = True
                                 msg.success("Código de Ativação realizado com Sucesso. Sistema liberado!")
                             else:

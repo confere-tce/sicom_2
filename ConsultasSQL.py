@@ -50,6 +50,9 @@ class usuario:
 
         chave_acesso = usuario.chaveacesso()
 
+        email = email.lower()
+        username = username.lower()
+
         password_decoded = stauth.Hasher([password]).generate()
 
         cursor = conn.cursor()
@@ -73,7 +76,7 @@ class usuario:
             FROM
                 TCE_USERS
             WHERE
-                USERNAME = %s
+                LOWER (USERNAME) = %s
             """
         cursor.execute(consulta, (usuario,))
         dados = cursor.fetchall()
@@ -87,7 +90,7 @@ class usuario:
     def update_codigo_ativacao(usuario):
         cursor = conn.cursor()
         try:
-            cursor.execute('UPDATE TCE_USERS SET ATIVO = TRUE WHERE USERNAME = %s', (usuario,))
+            cursor.execute('UPDATE TCE_USERS SET ATIVO = TRUE WHERE LOWER (USERNAME) = %s', (usuario,))
             cursor.close()
             conn.commit()
             return True
@@ -548,4 +551,4 @@ def graficoEmpenhoDiarios(usuario, ano):
     cursor.execute(consulta, (usuario, ano,))
     dados = cursor.fetchall()
     cursor.close()
-    return dados
+    return dados  
